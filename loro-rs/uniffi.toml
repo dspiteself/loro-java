@@ -1,5 +1,8 @@
 [bindings]
 doc_comments = true
 
+[bindings.kotlin]
+package_name = "com.loro"
+
 [bindings.java]
 package_name = "com.loro"

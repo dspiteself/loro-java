@@ -6,7 +6,7 @@ LIB_NAME="libloro.a"
 RUST_FOLDER="$THIS_SCRIPT_DIR/../loro-rs"
 FRAMEWORK_NAME="loroFFI"
 
-JAVA_FOLDER="$THIS_SCRIPT_DIR/../loro-mvn/src/main/java"
+KOTLIN_FOLDER="$THIS_SCRIPT_DIR/../loro-kotlin/src/main/java"
 BUILD_FOLDER="$RUST_FOLDER/target"
 
 ## The specific issue with an earlier nightly version and linking into an
@@ -36,22 +36,24 @@ cargo_build="cargo build --manifest-path $RUST_FOLDER/Cargo.toml"
 #cargo_build_nightly_with_std="cargo -Zbuild-std build --manifest-path $RUST_FOLDER/Cargo.toml"
 
 echo "▸ Clean state"
-rm -rf "${JAVA_FOLDER}"
-mkdir -p "${JAVA_FOLDER}"
+rm -rf "${KOTLIN_FOLDER}"
+mkdir -p "${KOTLIN_FOLDER}"
 
 echo "▸ Building for x86_64-unknown-linux-gnu"
 CFLAGS_x86_64_unknown_linux_gnu="-target x86_64-unknown-linux-gnu" \
 $cargo_build --target x86_64-unknown-linux-gnu --locked --release
 
-echo "▸ Generate Java Scaffolding Code"
+echo "▸ Generate kotlin Scaffolding Code"
 cargo run --manifest-path "$RUST_FOLDER/Cargo.toml"  \
-    --bin uniffi-bindgen-java generate \
+    --features=cli \
+    --bin uniffi-bindgen generate \
     "$RUST_FOLDER/src/loro.udl" \
     --no-format \
-    --out-dir "${JAVA_FOLDER}"
+    --language kotlin \
+    --out-dir "${KOTLIN_FOLDER}"
 
 
-cp "${BUILD_FOLDER}/x86_64-unknown-linux-gnu/release/libloro.so" "$THIS_SCRIPT_DIR/../loro-mvn/src/main/resources/linux-x86-64"
+cp "${BUILD_FOLDER}/x86_64-unknown-linux-gnu/release/libloro.so" "$THIS_SCRIPT_DIR/../loro-kotlin/src/main/resources/linux-x86-64/libuniffi_loro.so"
 
 #bash "${THIS_SCRIPT_DIR}/refine_trait.sh"
 
@@ -59,7 +61,7 @@ cp "${BUILD_FOLDER}/x86_64-unknown-linux-gnu/release/libloro.so" "$THIS_SCRIPT_D
 
 # copies the generated header into the build folder structure for local XCFramework usage
 #mkdir -p "${BUILD_FOLDER}/includes/loroFFI"
-#cp "${JAVA_FOLDER}/loroFFI.h" "${BUILD_FOLDER}/includes/loroFFI"
-#cp "${JAVA_FOLDER}/loroFFI.modulemap" "${BUILD_FOLDER}/includes/loroFFI/module.modulemap"
-#cp -f "${JAVA_FOLDER}/loro.java" "${THIS_SCRIPT_DIR}/../Sources/Loro/LoroFFI.java"
+#cp "${KOTLIN_FOLDER}/loroFFI.h" "${BUILD_FOLDER}/includes/loroFFI"
+#cp "${KOTLIN_FOLDER}/loroFFI.modulemap" "${BUILD_FOLDER}/includes/loroFFI/module.modulemap"
+#cp -f "${KOTLIN_FOLDER}/loro.java" "${THIS_SCRIPT_DIR}/../Sources/Loro/LoroFFI.java"
 
