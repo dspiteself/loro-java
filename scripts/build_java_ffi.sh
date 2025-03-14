@@ -51,7 +51,7 @@ cargo run --manifest-path "$RUST_FOLDER/Cargo.toml"  \
     --out-dir "${JAVA_FOLDER}"
 
 
-cp "${BUILD_FOLDER}/x86_64-unknown-linux-gnu/release/libloro.so" "$THIS_SCRIPT_DIR/../loro-mvn/src/main/resources/linux-x86-64"
+cp "${BUILD_FOLDER}/x86_64-unknown-linux-gnu/release/libloro.so" "$THIS_SCRIPT_DIR/../loro-mvn/src/main/resources/linux-x86-64/uniffi_loro.so"
 
 #bash "${THIS_SCRIPT_DIR}/refine_trait.sh"
 
